@@ -39,3 +39,31 @@ INNER JOIN category
 USING (category_id)
 GROUP BY name
 ORDER BY average_running_time DESC;
+
+# Provide a list of all distinct film titles, 
+# along with their availability status in the inventory. 
+# Include a column indicating whether each title is 'Available' or 'NOT available.' 
+# Note that there are 42 titles that are not in the inventory, 
+# and this information can be obtained using a CASE statement combined with IFNULL."
+SELECT DISTINCT(title), inventory_id,
+   CASE 
+        WHEN ISNULL(return_date) THEN 'Not Available'
+        ELSE 'Available'
+    END AS availability
+FROM film    
+INNER JOIN inventory
+USING (film_id)
+INNER JOIN rental
+USING (inventory_id)
+WHERE return_date IS NULL;
+
+
+SELECT title, inventory_id,
+        CASE
+             WHEN ISNULL(inventory_id) THEN 'Not Available'
+        ELSE 'Exists'
+    END AS status
+FROM film
+LEFT JOIN inventory
+USING(film_id)
+WHERE inventory_id IS NULL;
